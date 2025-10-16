@@ -2,10 +2,22 @@ package com.jonathan.springboot.di.factura.springboot_difactura.models;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
 public class Invoice {
 
+    @Autowired
     private Client client;
+
+    @Value("${invoice.description.office}")
     private String description;
+
+    @Autowired
+    @Qualifier("officeInvoice")
     private List<Item> items;
 
     public Client getClient() {
@@ -32,4 +44,15 @@ public class Invoice {
         this.items = items;
     }
 
+    public int getTotalAmount() {
+        // int total = 0;
+
+        // for(Item item : items) {
+        // total = total + item.getAmount();
+        // }
+
+        return items.stream()
+                .map(item -> item.getAmount())
+                .reduce(0, (addition, amount) -> addition + amount);
+    }
 }
