@@ -6,8 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
+
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 @Component
+@RequestScope
 public class Invoice {
 
     @Autowired
@@ -19,6 +25,18 @@ public class Invoice {
     @Autowired
     @Qualifier("officeInvoice")
     private List<Item> items;
+
+    @PostConstruct
+    public void init() {
+        System.out.println("Init method of the invoice class");
+        client.setName(client.getName().concat(" Jose"));
+        description = description.concat(" of the client ").concat(client.getName()).concat(" ").concat(client.getLastname());
+    }
+
+    @PreDestroy
+    public void destroy() {
+        System.out.println("Destroy method of the invoice class");
+    }
 
     public Client getClient() {
         return client;
